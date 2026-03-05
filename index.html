@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ Despedida de Soltera · Madrid</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #d4506b;
+    --blush: #fce8ec;
+    --champagne: #f5e6c8;
+    --gold: #b8892a;
+    --dark: #1c0f14;
+    --cream: #fdf8f5;
+    --muted: #9b7a84;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 5% 0%, rgba(212,80,107,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 95% 100%, rgba(184,137,42,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 940px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header { text-align: center; padding: 60px 0 44px; }
+  .header-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--rose); background: rgba(212,80,107,0.08); border: 1px solid rgba(212,80,107,0.2);
+    padding: 7px 20px; border-radius: 100px; margin-bottom: 22px;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+    font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; margin-bottom: 16px;
+  }
+  h1 .accent { font-style: italic; color: var(--rose); }
+  .subtitle { color: var(--muted); font-size: 15px; font-weight: 300; max-width: 400px; margin: 0 auto 28px; line-height: 1.7; }
+  .deco { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .deco::before, .deco::after { content: ''; height: 1px; width: 80px; background: linear-gradient(90deg, transparent, rgba(212,80,107,0.3)); }
+  .deco::after { transform: scaleX(-1); }
+
+  /* CARD */
+  .card {
+    background: var(--white); border-radius: 28px; padding: 44px;
+    border: 1px solid rgba(212,80,107,0.1);
+    box-shadow: 0 2px 0 rgba(212,80,107,0.06), 0 8px 40px rgba(28,15,20,0.07);
+    margin-bottom: 32px;
+  }
+  @media (max-width: 600px) { .card { padding: 26px 20px; } }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 26px; }
+  @media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field label {
+    display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 9px;
+  }
+  .field input, .field select {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid rgba(212,80,107,0.15); border-radius: 12px;
+    font-family: 'Outfit', sans-serif; font-size: 15px; color: var(--dark);
+    background: rgba(253,248,245,0.6); transition: all 0.2s; outline: none; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--rose); background: white; box-shadow: 0 0 0 3px rgba(212,80,107,0.08);
+  }
+
+  /* Budget helper */
+  .budget-helper {
+    font-size: 12px; color: var(--rose); margin-top: 6px; height: 16px; transition: opacity 0.2s;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px; display: block;
+  }
+  .section-hint { font-size: 12px; color: var(--muted); font-weight: 300; margin-left: 6px; text-transform: none; letter-spacing: 0; }
+
+  /* FILTER GROUPS */
+  .filter-groups { display: flex; flex-direction: column; gap: 18px; margin-bottom: 28px; }
+  .filter-group { }
+  .filter-group-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 9px; display: flex; align-items: center; gap: 8px;
+  }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    cursor: pointer; padding: 8px 16px; border-radius: 100px;
+    border: 1.5px solid rgba(212,80,107,0.18); font-size: 13px; color: var(--muted);
+    background: transparent; transition: all 0.18s; user-select: none; font-family: 'Outfit', sans-serif;
+  }
+  .pill:hover { border-color: var(--rose); color: var(--rose); }
+  .pill.on { background: var(--rose); border-color: var(--rose); color: white; }
+  .pill.on.cat { background: #b03050; }
+
+  .btn-main {
+    width: 100%; padding: 17px;
+    background: linear-gradient(135deg, #d4506b 0%, #b03050 100%);
+    color: white; border: none; border-radius: 14px;
+    font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0.03em;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(212,80,107,0.3);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-main:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,80,107,0.4); }
+  .btn-main:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+  .error-box {
+    display: none; margin-top: 16px; padding: 14px 18px;
+    background: rgba(212,80,107,0.07); border: 1px solid rgba(212,80,107,0.2);
+    border-radius: 12px; color: var(--rose); font-size: 14px; text-align: center;
+  }
+
+  /* LOADING */
+  #loading { display: none; text-align: center; padding: 60px 0; }
+  .spinner-ring {
+    width: 52px; height: 52px;
+    border: 3px solid rgba(212,80,107,0.15); border-top-color: var(--rose);
+    border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 22px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-style: italic; color: var(--dark); margin-bottom: 20px; }
+  .loading-steps { list-style: none; display: inline-flex; flex-direction: column; gap: 10px; text-align: left; }
+  .loading-steps li { font-size: 13px; color: #ccc; display: flex; align-items: center; gap: 10px; transition: color 0.4s; }
+  .loading-steps li.done { color: var(--rose); }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  /* RESULTS */
+  #results { display: none; }
+  .results-header { text-align: center; margin-bottom: 36px; animation: fadeUp 0.5s ease; }
+  .results-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 400; margin-bottom: 8px; }
+  .results-header p { color: var(--muted); font-size: 14px; }
+  .source-note {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gold);
+    background: rgba(184,137,42,0.08); border: 1px solid rgba(184,137,42,0.2);
+    padding: 5px 14px; border-radius: 100px; margin-top: 10px;
+  }
+
+  /* CATEGORY SECTIONS */
+  .cat-section { margin-bottom: 44px; }
+  .cat-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px; padding-bottom: 12px;
+    border-bottom: 1.5px solid rgba(212,80,107,0.12);
+  }
+  .cat-emoji { font-size: 1.5rem; }
+  .cat-name { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; }
+  .cat-count { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+  .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 640px) { .plans-grid { grid-template-columns: 1fr; } }
+
+  .plan-card {
+    background: white; border-radius: 20px;
+    border: 1px solid rgba(212,80,107,0.09);
+    box-shadow: 0 2px 14px rgba(28,15,20,0.05);
+    overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.5s ease both;
+    display: flex; flex-direction: column;
+  }
+  .plan-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(28,15,20,0.1); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .plan-body { padding: 22px 22px 18px; flex: 1; display: flex; flex-direction: column; }
+
+  .plan-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .plan-emoji { font-size: 1.7rem; line-height: 1; }
+  .plan-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .badge { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 100px; white-space: nowrap; }
+  .badge-price { background: rgba(212,80,107,0.1); color: var(--rose); }
+  .badge-stars { background: rgba(184,137,42,0.1); color: var(--gold); }
+
+  .plan-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; line-height: 1.25; margin-bottom: 2px; }
+  .plan-place { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .plan-desc { font-size: 13px; line-height: 1.65; color: #5a3d46; margin-bottom: 14px; flex: 1; }
+
+  .plan-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: #6a4450; margin-bottom: 12px; }
+  .meta-item { display: flex; align-items: center; gap: 4px; }
+
+  .includes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .inc-tag { font-size: 11px; padding: 3px 9px; background: var(--blush); color: var(--rose); border-radius: 100px; }
+
+  .plan-tip {
+    background: linear-gradient(135deg, rgba(245,230,200,0.5), rgba(252,232,236,0.4));
+    border-left: 3px solid var(--gold); padding: 9px 12px;
+    border-radius: 0 8px 8px 0; font-size: 12px; color: #6a4420; font-style: italic; margin-bottom: 12px;
+  }
+
+  .plan-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid rgba(212,80,107,0.08); }
+  .plan-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; color: var(--rose); text-decoration: none; font-weight: 500; transition: gap 0.15s;
+  }
+  .plan-link:hover { gap: 8px; }
+  .plan-horario { font-size: 11px; color: var(--muted); }
+
+  .btn-reset {
+    display: block; margin: 0 auto 60px; padding: 13px 34px;
+    background: transparent; border: 1.5px solid rgba(212,80,107,0.3);
+    border-radius: 100px; color: var(--rose);
+    font-family: 'Outfit', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-reset:hover { background: var(--rose); color: white; border-color: var(--rose); }
+
+  footer { text-align: center; padding: 16px 0 40px; font-size: 12px; color: var(--muted); opacity: 0.55; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-pill">💍 Madrid · 11–20 personas</div>
+    <h1>La <span class="accent">despedida perfecta</span><br>te está esperando</h1>
+    <p class="subtitle">Dinos tu presupuesto por persona y qué os apetece, y buscamos planes reales en Madrid.</p>
+    <div class="deco">🥂</div>
+  </header>
+
+  <div class="card" id="form-section">
+    <div class="form-grid">
+      <div class="field">
+        <label>📅 Fecha de la despedida</label>
+        <input type="date" id="fecha" />
+      </div>
+      <div class="field">
+        <label>💶 Presupuesto por persona (€)</label>
+        <input type="number" id="presupuesto" placeholder="Ej: 80" min="20" step="10" oninput="updateBudgetHelper()" />
+        <div class="budget-helper" id="budget-helper"></div>
+      </div>
+      <div class="field">
+        <label>👯 Número de personas</label>
+        <input type="number" id="personas" placeholder="Ej: 15" min="2" max="50" value="15" oninput="updateBudgetHelper()" />
+      </div>
+      <div class="field">
+        <label>🌙 Duración del plan</label>
+        <select id="duracion">
+          <option value="tarde">Solo por la tarde</option>
+          <option value="noche">Solo por la noche</option>
+          <option value="dia_completo" selected>Día completo</option>
+          <option value="fin_semana">Fin de semana</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-groups">
+      <div class="filter-group">
+        <div class="filter-group-label">
+          🎯 Tipo de actividad <span class="section-hint">— elige las que quieras (al menos 2 planes por cada una)</span>
+        </div>
+        <div class="pills" id="cats">
+          <span class="pill cat on" data-cat="spa">🧖 Spa & Relax</span>
+          <span class="pill cat on" data-cat="gastronomia">🍷 Gastronomía</span>
+          <span class="pill cat on" data-cat="fiesta">🎉 Fiesta & Baile</span>
+          <span class="pill cat on" data-cat="actividades">🎯 Actividades de grupo</span>
+          <span class="pill cat on" data-cat="experiencias">✨ Experiencias únicas</span>
+          <span class="pill cat" data-cat="outdoor">🌿 Aire libre & Naturaleza</span>
+          <span class="pill cat" data-cat="cultura">🎨 Arte & Cultura</span>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-label">✨ Ambiente</div>
+        <div class="pills" id="vibes">
+          <span class="pill on" data-v="elegante">Elegante</span>
+          <span class="pill" data-v="loco">Loco & divertido</span>
+          <span class="pill on" data-v="romantico">Romántico</span>
+          <span class="pill" data-v="activo">Activo</span>
+          <span class="pill on" data-v="exclusivo">Exclusivo</span>
+          <span class="pill" data-v="bohemio">Bohemio</span>
+          <span class="pill" data-v="retro">Retro & Vintage</span>
+          <span class="pill" data-v="outdoor">Al aire libre</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-main" id="btn-buscar" onclick="buscarPlanes()">
+      <span>🔍</span> Buscar planes reales en Madrid
+    </button>
+    <div class="error-box" id="err"></div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loading">
+    <div class="spinner-ring"></div>
+    <p class="loading-title">Buscando los mejores planes…</p>
+    <ul class="loading-steps" id="steps-list"></ul>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="results-header">
+      <h2>Vuestros planes 🌸</h2>
+      <p id="res-sub"></p>
+      <div class="source-note">🌐 Planes buscados en internet en tiempo real</div>
+    </div>
+    <div id="results-body"></div>
+    <button class="btn-reset" onclick="resetear()">← Nueva búsqueda</button>
+  </div>
+
+  <footer>Hecho con 💕 para despedidas inolvidables en Madrid</footer>
+</div>
+
+<script>
+  document.querySelectorAll('.pill').forEach(p => p.addEventListener('click', () => p.classList.toggle('on')));
+
+  const durMap = {
+    tarde: 'por la tarde', noche: 'por la noche',
+    dia_completo: 'durante el día completo', fin_semana: 'durante el fin de semana'
+  };
+
+  const catMeta = {
+    spa:          { emoji: '🧖', label: 'Spa & Relax' },
+    gastronomia:  { emoji: '🍷', label: 'Gastronomía & Copas' },
+    fiesta:       { emoji: '🎉', label: 'Fiesta & Baile' },
+    actividades:  { emoji: '🎯', label: 'Actividades de grupo' },
+    experiencias: { emoji: '✨', label: 'Experiencias únicas' },
+    outdoor:      { emoji: '🌿', label: 'Aire libre & Naturaleza' },
+    cultura:      { emoji: '🎨', label: 'Arte & Cultura' }
+  };
+
+  function updateBudgetHelper() {
+    const ppp = parseInt(document.getElementById('presupuesto').value) || 0;
+    const n   = parseInt(document.getElementById('personas').value) || 15;
+    const el  = document.getElementById('budget-helper');
+    if (ppp && n) {
+      el.textContent = `Total del grupo: ~${(ppp * n).toLocaleString('es-ES')}€`;
+    } else {
+      el.textContent = '';
+    }
+  }
+
+  function getSelectedCats() {
+    return [...document.querySelectorAll('#cats .pill.on')].map(p => p.dataset.cat);
+  }
+
+  function getVibes() {
+    return [...document.querySelectorAll('#vibes .pill.on')].map(p => p.dataset.v);
+  }
+
+  function setSteps(steps) {
+    const el = document.getElementById('steps-list');
+    el.innerHTML = steps.map((s, i) =>
+      `<li id="lstep${i}"><span class="step-dot"></span>${s}</li>`
+    ).join('');
+  }
+
+  function animateSteps(count) {
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        document.getElementById('lstep' + i)?.classList.add('done');
+      }, 1400 * i + 600);
+    }
+  }
+
+  async function buscarPlanes() {
+    const fecha = document.getElementById('fecha').value;
+    const ppp   = document.getElementById('presupuesto').value;
+    const n     = document.getElementById('personas').value || 15;
+    const dur   = document.getElementById('duracion').value;
+    const cats  = getSelectedCats();
+    const vibes = getVibes();
+    const errEl = document.getElementById('err');
+    errEl.style.display = 'none';
+
+    if (!fecha || !ppp) {
+      errEl.textContent = 'Por favor, introduce la fecha y el presupuesto por persona.';
+      errEl.style.display = 'block'; return;
+    }
+    if (cats.length === 0) {
+      errEl.textContent = 'Selecciona al menos un tipo de actividad.';
+      errEl.style.display = 'block'; return;
+    }
+
+    const dateObj = new Date(fecha + 'T12:00:00');
+    const dateStr = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const totalBudget = parseInt(ppp) * parseInt(n);
+
+    const stepLabels = [
+      'Buscando actividades de grupo en Madrid...',
+      ...cats.map(c => `Buscando planes de ${catMeta[c]?.label || c}...`),
+      'Filtrando por presupuesto y disponibilidad...',
+      'Preparando tus recomendaciones...'
+    ];
+
+    setSteps(stepLabels);
+
+    document.getElementById('form-section').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    animateSteps(stepLabels.length);
+
+    // Build category-specific search instructions
+    const catInstructions = cats.map(cat => {
+      const searches = {
+        spa: `Para "spa": busca spas, balnearios y centros de bienestar en Madrid que admitan grupos grandes. Considera también opciones como Float Madrid, Aire Ancient Baths, Caldea (si fin de semana), hammams, etc. No te limites a lugares específicos de despedidas.`,
+        gastronomia: `Para "gastronomia": busca restaurantes, tabernas, bodegas o experiencias gastronómicas en Madrid para grupos. Considera catas de vino, clases de cocina, mercados gastronómicos, rutas de tapas, restaurantes con sala privada para grupos. No solo despedidas.`,
+        fiesta: `Para "fiesta": busca locales de baile, discotecas, karaokes, bares con pista, salas de fiestas privadas en Madrid. Considera también opciones como bares con photocall, salones de juegos adultos, escape rooms temáticos de fiesta, etc.`,
+        actividades: `Para "actividades": busca actividades de grupo NO típicas de despedidas: paintball, karting, escalada indoor, bowling, axe throwing, clases de baile (salsa, flamenco, burlesque), rallies urbanos, talleres creativos, juegos de rol en vivo, pádel con grupo, etc. en Madrid.`,
+        experiencias: `Para "experiencias": busca experiencias únicas en Madrid para grupos: cenas con espectáculo, noches de drag, escape rooms premium, realidad virtual en grupo, catas a ciegas, talleres de cerámica o pintura, sesiones de fotografía en grupo, noches de magos o mentalistas, etc.`,
+        outdoor: `Para "outdoor": busca actividades al aire libre en Madrid y alrededores para grupos: senderismo Sierra de Guadarrama, piragüismo en Manzanares, paintball en campo, rutas en quad, picnics organizados en parques, yoga al aire libre, visitas a fincas para grupos, etc.`,
+        cultura: `Para "cultura": busca visitas culturales y artísticas para grupos en Madrid: visitas nocturnas a museos, tours street art, talleres de pintura con cava, flamenco show privado, visitas guiadas al Madrid desconocido, talleres de alfarería, experiencias teatrales inmersivas, etc.`
+      };
+      return searches[cat] || `Para "${cat}": busca actividades relacionadas en Madrid para grupos grandes.`;
+    }).join('\n\n');
+
+    const systemPrompt = `Eres una experta organizadora de actividades de grupo y despedidas de soltera en Madrid. Tu especialidad es encontrar planes originales, no necesariamente específicos de despedidas, que funcionen perfectamente para grupos de mujeres celebrando una ocasión especial.
+
+PROCESO:
+1. Usa web_search múltiples veces para cada categoría solicitada. Busca en sitios como: GetYourGuide, Civitatis, Airbnb Experiences, Groupon España, webs de actividades (Funidelia, Smartbox, Aladinia, Funbooker), blogs de planes en Madrid, webs directas de los negocios, TripAdvisor, Google Maps reviews, etc.
+2. Para cada categoría debes encontrar MÍNIMO 2 planes diferentes.
+3. Prioriza actividades que NO sean exclusivamente "packs de despedida" — busca negocios reales que ofrezcan experiencias para grupos.
+4. Verifica que los precios sean realistas para Madrid en 2025-2026.
+
+RESPONDE ÚNICAMENTE con un JSON válido (sin texto extra, sin backticks, sin markdown) con esta estructura:
+{
+  "categorias": [
+    {
+      "cat": "nombre_categoria",
+      "planes": [
+        {
+          "emoji": "string",
+          "nombre": "string (nombre real del negocio o actividad)",
+          "lugar": "string (nombre del local/empresa)",
+          "zona": "string (barrio de Madrid)",
+          "descripcion": "string (2-3 frases atractivas y concretas)",
+          "precio_por_persona": number,
+          "horario": "string",
+          "duracion_horas": number,
+          "incluye": ["string", "string", "string"],
+          "url": "string (URL real si existe, si no '')",
+          "valoracion": number,
+          "consejo": "string (tip práctico para grupo grande)",
+          "es_tipico_despedida": boolean
+        }
+      ]
+    }
+  ]
+}`;
+
+    const userMsg = `Busca planes reales en internet para un grupo celebrando una despedida de soltera en Madrid:
+
+PARÁMETROS:
+- Fecha: ${dateStr}
+- Personas: ~${n} personas
+- Presupuesto por persona: ${ppp}€ (total grupo: ~${totalBudget}€)
+- Duración: ${durMap[dur]}
+- Ambiente buscado: ${vibes.join(', ')}
+- Categorías seleccionadas: ${cats.join(', ')}
+
+INSTRUCCIONES POR CATEGORÍA:
+${catInstructions}
+
+IMPORTANTE: Devuelve mínimo 2 planes por cada categoría en este array: [${cats.join(', ')}].
+Ajusta los precios al presupuesto de ${ppp}€/persona — si algo es más caro, inclúyelo igualmente marcando el precio real.
+Responde solo con el JSON.`;
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 8000,
+          system: systemPrompt,
+          tools: [{ type: "web_search_20250305", name: "web_search" }],
+          messages: [{ role: "user", content: userMsg }]
+        })
+      });
+
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error?.message || `Error ${res.status}`);
+      }
+
+      const data = await res.json();
+      const textBlocks = (data.content || []).filter(b => b.type === 'text');
+      const raw = textBlocks.map(b => b.text).join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const match = clean.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('No se pudo parsear la respuesta. Inténtalo de nuevo.');
+
+      const parsed = JSON.parse(match[0]);
+      mostrarResultados(parsed, ppp, n, dateStr, durMap[dur], cats);
+
+    } catch (e) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('form-section').style.display = 'block';
+      errEl.textContent = `No se pudieron cargar los planes: ${e.message}`;
+      errEl.style.display = 'block';
+      console.error(e);
+    }
+  }
+
+  function mostrarResultados(data, ppp, n, dateStr, duracion, selectedCats) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('res-sub').textContent =
+      `${dateStr} · ${ppp}€/persona · ~${n} personas · ${duracion}`;
+
+    const body = document.getElementById('results-body');
+    body.innerHTML = '';
+
+    const cats = data.categorias || [];
+
+    // Render in the order the user selected them
+    selectedCats.forEach((catKey, secIdx) => {
+      const section = cats.find(c => c.cat === catKey);
+      const meta = catMeta[catKey] || { emoji: '🎯', label: catKey };
+      const planes = section?.planes || [];
+      if (planes.length === 0) return;
+
+      const sec = document.createElement('div');
+      sec.className = 'cat-section';
+
+      sec.innerHTML = `
+        <div class="cat-header">
+          <span class="cat-emoji">${meta.emoji}</span>
+          <span class="cat-name">${meta.label}</span>
+          <span class="cat-count">${planes.length} planes</span>
+        </div>
+        <div class="plans-grid" id="grid-${catKey}"></div>
+      `;
+      body.appendChild(sec);
+
+      const grid = sec.querySelector(`#grid-${catKey}`);
+      planes.forEach((p, i) => {
+        const incluye = (p.incluye || []).map(x => `<span class="inc-tag">✓ ${x}</span>`).join('');
+        const linkHtml = p.url
+          ? `<a class="plan-link" href="${p.url}" target="_blank" rel="noopener">Reservar →</a>`
+          : `<span></span>`;
+
+        const tipico = p.es_tipico_despedida
+          ? '' : `<span class="inc-tag" style="background:rgba(184,137,42,0.12);color:var(--gold);">🌟 No es típico despedida</span>`;
+
+        const card = document.createElement('div');
+        card.className = 'plan-card';
+        card.style.animationDelay = `${(secIdx * 0.15) + (i * 0.1)}s`;
+        card.innerHTML = `
+          <div class="plan-body">
+            <div class="plan-top">
+              <span class="plan-emoji">${p.emoji}</span>
+              <div class="plan-badges">
+                <span class="badge badge-price">${p.precio_por_persona}€/persona</span>
+                <span class="badge badge-stars">⭐ ${p.valoracion}</span>
+              </div>
+            </div>
+            <div class="plan-title">${p.nombre}</div>
+            <div class="plan-place">📍 ${p.lugar}${p.zona ? ' · ' + p.zona : ''}</div>
+            <p class="plan-desc">${p.descripcion}</p>
+            <div class="plan-meta">
+              <span class="meta-item">🕐 ${p.horario}</span>
+              ${p.duracion_horas ? `<span class="meta-item">⏱ ~${p.duracion_horas}h</span>` : ''}
+            </div>
+            <div class="includes">${incluye}${tipico}</div>
+            <div class="plan-tip">💡 ${p.consejo}</div>
+            <div class="plan-footer">
+              ${linkHtml}
+              <span class="plan-horario">${p.horario}</span>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    });
+
+    document.getElementById('results').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetear() {
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('form-section').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
