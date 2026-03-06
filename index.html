@@ -264,14 +264,14 @@
     <div class="filter-groups">
       <div class="filter-group">
         <div class="filter-group-label">
-          🎯 Tipo de actividad <span class="section-hint">— elige las que quieras (al menos 2 planes por cada una)</span>
+          🎯 Tipo de actividad <span class="section-hint" id="cat-hint">— selecciona máximo 3</span>
         </div>
         <div class="pills" id="cats">
           <span class="pill cat on" data-cat="spa">🧖 Spa & Relax</span>
           <span class="pill cat on" data-cat="gastronomia">🍷 Gastronomía</span>
           <span class="pill cat on" data-cat="fiesta">🎉 Fiesta & Baile</span>
-          <span class="pill cat on" data-cat="actividades">🎯 Actividades de grupo</span>
-          <span class="pill cat on" data-cat="experiencias">✨ Experiencias únicas</span>
+          <span class="pill cat" data-cat="actividades">🎯 Actividades de grupo</span>
+          <span class="pill cat" data-cat="experiencias">✨ Experiencias únicas</span>
           <span class="pill cat" data-cat="outdoor">🌿 Aire libre & Naturaleza</span>
           <span class="pill cat" data-cat="cultura">🎨 Arte & Cultura</span>
         </div>
@@ -320,7 +320,33 @@
 </div>
 
 <script>
-  document.querySelectorAll('.pill').forEach(p => p.addEventListener('click', () => p.classList.toggle('on')));
+  // Generic vibe pills
+  document.querySelectorAll('#vibes .pill').forEach(p => p.addEventListener('click', () => p.classList.toggle('on')));
+
+  // Category pills — max 3
+  function updateCatHint() {
+    const selected = document.querySelectorAll('#cats .pill.on').length;
+    const hint = document.getElementById('cat-hint');
+    if (selected >= 3) {
+      hint.textContent = '— máximo 3 seleccionadas ✓';
+      hint.style.color = 'var(--rose)';
+    } else {
+      hint.textContent = `— selecciona máximo 3 (${selected}/3)`;
+      hint.style.color = '';
+    }
+  }
+
+  document.querySelectorAll('#cats .pill').forEach(p => p.addEventListener('click', () => {
+    const isOn = p.classList.contains('on');
+    if (!isOn) {
+      const selected = document.querySelectorAll('#cats .pill.on').length;
+      if (selected >= 3) return; // block if already 3
+    }
+    p.classList.toggle('on');
+    updateCatHint();
+  }));
+
+  updateCatHint();
 
   const durMap = {
     tarde: 'por la tarde', noche: 'por la noche',
@@ -389,18 +415,18 @@
       errEl.textContent = 'Selecciona al menos un tipo de actividad.';
       errEl.style.display = 'block'; return;
     }
+    // Cap at 3 categories to keep cost low and response fast
+    const catsLimited = cats.slice(0, 3);
 
     const dateObj = new Date(fecha + 'T12:00:00');
     const dateStr = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const totalBudget = parseInt(ppp) * parseInt(n);
 
     const stepLabels = [
-      'Buscando actividades de grupo en Madrid...',
-      ...cats.map(c => `Buscando planes de ${catMeta[c]?.label || c}...`),
-      'Filtrando por presupuesto y disponibilidad...',
-      'Preparando tus recomendaciones...'
+      'Buscando actividades en Madrid...',
+      ...catsLimited.map(c => `Buscando ${catMeta[c]?.label || c}...`),
+      'Preparando recomendaciones...'
     ];
-
     setSteps(stepLabels);
 
     document.getElementById('form-section').style.display = 'none';
@@ -408,11 +434,20 @@
     document.getElementById('results').style.display = 'none';
     animateSteps(stepLabels.length);
 
-    const catInstructions = cats.join(', ');
+    // Cache key based on search params
+    const cacheKey = `${fecha}_${ppp}_${n}_${dur}_${catsLimited.join('-')}_${vibes.join('-')}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      mostrarResultados(JSON.parse(cached), ppp, n, dateStr, durMap[dur], catsLimited);
+      return;
+    }
 
-    const systemPrompt = `Experta en planes de grupo en Madrid. Usa web_search máximo 1 vez por categoría. Busca en GetYourGuide, Civitatis, Airbnb Experiences o webs de negocios reales. Prioriza actividades NO exclusivas de despedidas. Responde SOLO con JSON válido sin texto extra ni backticks: {"categorias":[{"cat":"","planes":[{"emoji":"","nombre":"","lugar":"","zona":"","descripcion":"","precio_por_persona":0,"horario":"","duracion_horas":0,"incluye":[],"url":"","valoracion":0,"consejo":"","es_tipico_despedida":false}]}]}`;
+    // Dynamic max_tokens based on number of categories (2 plans each ~300 tokens)
+    const maxTok = catsLimited.length * 700 + 500;
 
-    const userMsg = `Despedida soltera Madrid. Fecha: ${dateStr}. ~${n} personas. ${ppp}€/persona. ${durMap[dur]}. Ambiente: ${vibes.join(', ')}. Categorías: ${catInstructions}. Mínimo 2 planes por categoría. Solo JSON.`;
+    const systemPrompt = `Experta en planes de grupo en Madrid. Usa web_search 1 vez por categoría. Busca en GetYourGuide, Civitatis, Airbnb Experiences o webs reales. Responde SOLO con JSON sin texto extra ni backticks: {"categorias":[{"cat":"","planes":[{"emoji":"","nombre":"","lugar":"","zona":"","descripcion":"","precio_por_persona":0,"horario":"","incluye":[],"url":"","valoracion":0,"consejo":""}]}]}`;
+
+    const userMsg = `Madrid despedida soltera. ${dateStr}. ${n}p. ${ppp}€/p. ${durMap[dur]}. Ambiente: ${vibes.slice(0,3).join(',')}. Cats: ${catsLimited.join(',')}. 2 planes/cat. Solo JSON.`;
 
     try {
       const res = await fetch("/api/anthropic", {
@@ -420,7 +455,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-haiku-4-5-20251001",
-          max_tokens: 4000,
+          max_tokens: maxTok,
           system: systemPrompt,
           tools: [{ type: "web_search_20250305", name: "web_search" }],
           messages: [{ role: "user", content: userMsg }]
@@ -440,7 +475,11 @@
       if (!match) throw new Error('No se pudo parsear la respuesta. Inténtalo de nuevo.');
 
       const parsed = JSON.parse(match[0]);
-      mostrarResultados(parsed, ppp, n, dateStr, durMap[dur], cats);
+
+      // Cache result for this session
+      try { sessionStorage.setItem(cacheKey, JSON.stringify(parsed)); } catch(_) {}
+
+      mostrarResultados(parsed, ppp, n, dateStr, durMap[dur], catsLimited);
 
     } catch (e) {
       document.getElementById('loading').style.display = 'none';
@@ -488,8 +527,7 @@
           ? `<a class="plan-link" href="${p.url}" target="_blank" rel="noopener">Reservar →</a>`
           : `<span></span>`;
 
-        const tipico = p.es_tipico_despedida
-          ? '' : `<span class="inc-tag" style="background:rgba(184,137,42,0.12);color:var(--gold);">🌟 No es típico despedida</span>`;
+        const tipico = '';
 
         const card = document.createElement('div');
         card.className = 'plan-card';
