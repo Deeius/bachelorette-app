@@ -229,7 +229,7 @@
 <div class="container">
 
   <header>
-    <div class="header-pill">💍 Madrid · 11–20 personas</div>
+    <div class="header-pill">💍 Madrid</div>
     <h1>La <span class="accent">despedida perfecta</span><br>te está esperando</h1>
     <p class="subtitle">Dinos tu presupuesto por persona y qué os apetece, y buscamos planes reales en Madrid.</p>
     <div class="deco">🥂</div>
@@ -408,78 +408,19 @@
     document.getElementById('results').style.display = 'none';
     animateSteps(stepLabels.length);
 
-    // Build category-specific search instructions
-    const catInstructions = cats.map(cat => {
-      const searches = {
-        spa: `Para "spa": busca spas, balnearios y centros de bienestar en Madrid que admitan grupos grandes. Considera también opciones como Float Madrid, Aire Ancient Baths, Caldea (si fin de semana), hammams, etc. No te limites a lugares específicos de despedidas.`,
-        gastronomia: `Para "gastronomia": busca restaurantes, tabernas, bodegas o experiencias gastronómicas en Madrid para grupos. Considera catas de vino, clases de cocina, mercados gastronómicos, rutas de tapas, restaurantes con sala privada para grupos. No solo despedidas.`,
-        fiesta: `Para "fiesta": busca locales de baile, discotecas, karaokes, bares con pista, salas de fiestas privadas en Madrid. Considera también opciones como bares con photocall, salones de juegos adultos, escape rooms temáticos de fiesta, etc.`,
-        actividades: `Para "actividades": busca actividades de grupo NO típicas de despedidas: paintball, karting, escalada indoor, bowling, axe throwing, clases de baile (salsa, flamenco, burlesque), rallies urbanos, talleres creativos, juegos de rol en vivo, pádel con grupo, etc. en Madrid.`,
-        experiencias: `Para "experiencias": busca experiencias únicas en Madrid para grupos: cenas con espectáculo, noches de drag, escape rooms premium, realidad virtual en grupo, catas a ciegas, talleres de cerámica o pintura, sesiones de fotografía en grupo, noches de magos o mentalistas, etc.`,
-        outdoor: `Para "outdoor": busca actividades al aire libre en Madrid y alrededores para grupos: senderismo Sierra de Guadarrama, piragüismo en Manzanares, paintball en campo, rutas en quad, picnics organizados en parques, yoga al aire libre, visitas a fincas para grupos, etc.`,
-        cultura: `Para "cultura": busca visitas culturales y artísticas para grupos en Madrid: visitas nocturnas a museos, tours street art, talleres de pintura con cava, flamenco show privado, visitas guiadas al Madrid desconocido, talleres de alfarería, experiencias teatrales inmersivas, etc.`
-      };
-      return searches[cat] || `Para "${cat}": busca actividades relacionadas en Madrid para grupos grandes.`;
-    }).join('\n\n');
+    const catInstructions = cats.join(', ');
 
-    const systemPrompt = `Eres una experta organizadora de actividades de grupo y despedidas de soltera en Madrid. Tu especialidad es encontrar planes originales, no necesariamente específicos de despedidas, que funcionen perfectamente para grupos de mujeres celebrando una ocasión especial.
+    const systemPrompt = `Experta en planes de grupo en Madrid. Usa web_search máximo 1 vez por categoría. Busca en GetYourGuide, Civitatis, Airbnb Experiences o webs de negocios reales. Prioriza actividades NO exclusivas de despedidas. Responde SOLO con JSON válido sin texto extra ni backticks: {"categorias":[{"cat":"","planes":[{"emoji":"","nombre":"","lugar":"","zona":"","descripcion":"","precio_por_persona":0,"horario":"","duracion_horas":0,"incluye":[],"url":"","valoracion":0,"consejo":"","es_tipico_despedida":false}]}]}`;
 
-PROCESO:
-1. Usa web_search múltiples veces para cada categoría solicitada. Busca en sitios como: GetYourGuide, Civitatis, Airbnb Experiences, Groupon España, webs de actividades (Funidelia, Smartbox, Aladinia, Funbooker), blogs de planes en Madrid, webs directas de los negocios, TripAdvisor, Google Maps reviews, etc.
-2. Para cada categoría debes encontrar MÍNIMO 2 planes diferentes.
-3. Prioriza actividades que NO sean exclusivamente "packs de despedida" — busca negocios reales que ofrezcan experiencias para grupos.
-4. Verifica que los precios sean realistas para Madrid en 2025-2026.
-
-RESPONDE ÚNICAMENTE con un JSON válido (sin texto extra, sin backticks, sin markdown) con esta estructura:
-{
-  "categorias": [
-    {
-      "cat": "nombre_categoria",
-      "planes": [
-        {
-          "emoji": "string",
-          "nombre": "string (nombre real del negocio o actividad)",
-          "lugar": "string (nombre del local/empresa)",
-          "zona": "string (barrio de Madrid)",
-          "descripcion": "string (2-3 frases atractivas y concretas)",
-          "precio_por_persona": number,
-          "horario": "string",
-          "duracion_horas": number,
-          "incluye": ["string", "string", "string"],
-          "url": "string (URL real si existe, si no '')",
-          "valoracion": number,
-          "consejo": "string (tip práctico para grupo grande)",
-          "es_tipico_despedida": boolean
-        }
-      ]
-    }
-  ]
-}`;
-
-    const userMsg = `Busca planes reales en internet para un grupo celebrando una despedida de soltera en Madrid:
-
-PARÁMETROS:
-- Fecha: ${dateStr}
-- Personas: ~${n} personas
-- Presupuesto por persona: ${ppp}€ (total grupo: ~${totalBudget}€)
-- Duración: ${durMap[dur]}
-- Ambiente buscado: ${vibes.join(', ')}
-- Categorías seleccionadas: ${cats.join(', ')}
-
-INSTRUCCIONES POR CATEGORÍA:
-${catInstructions}
-
-IMPORTANTE: Devuelve mínimo 2 planes por cada categoría en este array: [${cats.join(', ')}].
-Ajusta los precios al presupuesto de ${ppp}€/persona — si algo es más caro, inclúyelo igualmente marcando el precio real.
-Responde solo con el JSON.`;
+    const userMsg = `Despedida soltera Madrid. Fecha: ${dateStr}. ~${n} personas. ${ppp}€/persona. ${durMap[dur]}. Ambiente: ${vibes.join(', ')}. Categorías: ${catInstructions}. Mínimo 2 planes por categoría. Solo JSON.`;
 
     try {
       const res = await fetch("/api/anthropic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 8000,
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 4000,
           system: systemPrompt,
           tools: [{ type: "web_search_20250305", name: "web_search" }],
           messages: [{ role: "user", content: userMsg }]
